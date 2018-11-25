@@ -1,15 +1,21 @@
 // IMPORTS
-const mongoose = require("mongoose");
 const express = require("express");
 const app = express();
+const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 app.use(bodyParser.json({
     limit: "10mb"
 }));
 const cors = require("cors");
 
+// `Cross-Origin Resource Sharing` est un mechanisme permettant d'autoriser les
+// requêtes provenant d'un nom de domaine different Ici, nous autorisons l'API
+// à repondre aux requêtes AJAX venant d'autres serveurs
+
+app.use("/api", cors());
+
 // CONNEXION AU SERVEUR
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/human_challenge", {
+mongoose.connect('' || "mongodb://localhost:27017/human_challenge", {
         useNewUrlParser: true
     },
     function (err) {
@@ -18,17 +24,25 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/human_cha
 
 );
 
-// `Cross-Origin Resource Sharing` est un mechanisme permettant d'autoriser les
-// requêtes provenant d'un nom de domaine different Ici, nous autorisons l'API
-// à repondre aux requêtes AJAX venant d'autres serveurs
-
-app.use("/api", cors());
-
 // Import des Models
 
 var User = require("./models/User");
 var Challenge = require("./models/Challenge");
 var Badges = require("./models/Badges");
+
+
+// Import des Routes
+// Les routes sont séparées dans plusieurs fichiers
+// var coreRoutes = require("./routes/core.js");
+// var userRoutes = require("./routes/user.js");
+var challengeRoutes = require("./routes/challenge.js");
+
+// Les routes relatives aux utilisateurs auront pour prefix d'URL `/user`
+// app.use("/api", coreRoutes);
+// app.use("/api/user", userRoutes);
+app.use("/api/challenge", challengeRoutes);
+
+
 
 // Première page
 
