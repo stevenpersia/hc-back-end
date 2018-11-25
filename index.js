@@ -15,7 +15,7 @@ const cors = require("cors");
 app.use("/api", cors());
 
 // CONNEXION AU SERVEUR
-mongoose.connect('' || "mongodb://localhost:27017/human_challenge", {
+mongoose.connect(process.env.URI || "mongodb://localhost:27017/human_challenge", {
         useNewUrlParser: true
     },
     function (err) {
