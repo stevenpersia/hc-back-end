@@ -29,7 +29,8 @@ mongoose.connect('' || "mongodb://localhost:27017/human_challenge", {
 var User = require("./models/User");
 var Challenge = require("./models/Challenge");
 var Badges = require("./models/Badges");
-
+var Category = require("./models/Category");
+var Prerequisite = require("./models/Prerequisite");
 
 // Import des Routes
 // Les routes sont séparées dans plusieurs fichiers

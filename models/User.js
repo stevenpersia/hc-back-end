@@ -10,14 +10,15 @@ const UserSchema = new mongoose.Schema({
         biography: String,
         phoneNumber: Number
     },
-    oarganizer: {
+    organizer: {
         type: String /* Association, Particulier, Institution... */
     },
     security: {
         token: String,
         hash: String,
         salt: String,
-        pepper: String
+        pepper: String,
+        smsCode: String
     },
     challenges: [{
         id: {
@@ -34,13 +35,16 @@ const UserSchema = new mongoose.Schema({
         latitude: Number,
         longitude: Number
     },
-    badges: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Badge"
-    }],
+    badges: Array,
+
+    // STP Farid comment on peut assigner à une categorie un nombre dans la base de donnée, merci.
+
+    // [{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Category"
+    // }],
     rpgCharacter: {
         class: String,
-        level: Number,
         experience: Number
     }
 

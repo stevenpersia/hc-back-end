@@ -1,8 +1,6 @@
 // IMPORTS
 const mongoose = require("mongoose");
 
-
-
 // CHALLENGE MODEL
 
 const ChallengeSchema = new mongoose.Schema({
@@ -20,10 +18,16 @@ const ChallengeSchema = new mongoose.Schema({
     }],
     ref: {
         name: String,
-        category: String,
+        category: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Category"
+        },
         /* Animaux, Environnement, Social, Culture  */
         descrition: String,
-        prerequisites: Array,
+        prerequisites: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Prerequisite"
+        }],
         moreInfo: String,
         /* if contact !== owner */
         contactName: String,
@@ -35,8 +39,18 @@ const ChallengeSchema = new mongoose.Schema({
         adressLine2: String,
         city: String,
         zipCode: Number,
-        latitude: Number,
-        longitude: Number
+        geolocalisation: {
+            timestamp: Number,
+            coords: {
+                accuracy: Number,
+                altitude: Number,
+                altitudeAccuracy: Number,
+                heading: Number,
+                latitude: Number,
+                longitude: Number,
+                speed: Number
+            }
+        }
     },
     date: {
         beginDate: Date,
@@ -46,8 +60,7 @@ const ChallengeSchema = new mongoose.Schema({
         images: Array,
         videos: Array
     },
-    status: String,
-    /* next, now, done, canceled */
+    canceled: Boolean
 });
 
 module.exports = mongoose.model("Challenge", ChallengeSchema, "challenges");
