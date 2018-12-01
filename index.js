@@ -39,11 +39,15 @@ const Prerequisite = require('./models/Prerequisite');
 // const coreRoutes = require("./routes/core.js");
 // const userRoutes = require("./routes/user.js");
 const challengeRoutes = require('./routes/challenge.js');
+const loginRoutes = require('./routes/login.js');
+const signupRoutes = require('./routes/signup.js');
 
 // Les routes relatives aux utilisateurs auront pour prefix d'URL `/user`
 // app.use("/api", coreRoutes);
 // app.use("/api/user", userRoutes);
 app.use('/api/challenge', challengeRoutes);
+app.use('/api/login', loginRoutes);
+app.use('/api/signup', signupRoutes);
 
 // Première page
 
