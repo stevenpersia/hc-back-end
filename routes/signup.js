@@ -7,7 +7,7 @@ var uid2 = require('uid2');
 const SHA256 = require('crypto-js/sha256');
 const encBase64 = require('crypto-js/enc-base64');
 
-router.post('/', function (req, res, next) {
+router.post('/', function(req, res, next) {
 	const token = uid2(64);
 	const salt = uid2(64);
 	const hash = SHA256(req.body.account.password + salt).toString(encBase64);
@@ -29,13 +29,13 @@ router.post('/', function (req, res, next) {
 			smsCode: req.body.security.smsCode
 		}
 	});
-	user.save(function (err) {
+	user.save(function(err) {
 		/* If phone number already exist */
-		if (err.code === 11000) {
-			return res.status(400).json({
-				error: 'Phone number must be unique'
-			});
-		}
+		// if (err.code && err.code === 11000) {
+		// 	return res.status(400).json({
+		// 		error: 'Phone number must be unique'
+		// 	});
+		// }
 
 		if (err) {
 			return next(err.message);

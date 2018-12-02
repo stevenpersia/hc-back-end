@@ -1,3 +1,8 @@
+// Le package `dotenv` permet de pouvoir definir des variables d'environnement
+// dans le fichier `.env` Nous utilisons le fichier `.slugignore` afin d'ignorer
+// le fichier `.env` dans l'environnement Heroku
+require('dotenv').config();
+
 // IMPORTS
 const express = require('express');
 const app = express();
@@ -18,7 +23,7 @@ app.use('/api', cors());
 
 // CONNEXION AU SERVEUR
 mongoose.connect(
-	process.env.URI || 'mongodb://localhost:27017/human_challenge',
+	process.env.MONGODB_URI,
 	{
 		useNewUrlParser: true
 	},
@@ -41,6 +46,7 @@ const Prerequisite = require('./models/Prerequisite');
 const challengeRoutes = require('./routes/challenge.js');
 const loginRoutes = require('./routes/login.js');
 const signupRoutes = require('./routes/signup.js');
+const profileRoutes = require('./routes/profile.js');
 
 // Les routes relatives aux utilisateurs auront pour prefix d'URL `/user`
 // app.use("/api", coreRoutes);
@@ -48,6 +54,7 @@ const signupRoutes = require('./routes/signup.js');
 app.use('/api/challenge', challengeRoutes);
 app.use('/api/login', loginRoutes);
 app.use('/api/signup', signupRoutes);
+app.use('/api/profile', profileRoutes);
 
 // Première page
 
