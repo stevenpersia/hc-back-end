@@ -47,6 +47,7 @@ const challengeRoutes = require('./routes/challenge.js');
 const loginRoutes = require('./routes/login.js');
 const signupRoutes = require('./routes/signup.js');
 const profileRoutes = require('./routes/profile.js');
+const settingsRoutes = require('./routes/settings.js');
 
 // Les routes relatives aux utilisateurs auront pour prefix d'URL `/user`
 // app.use("/api", coreRoutes);
@@ -55,9 +56,9 @@ app.use('/api/challenge', challengeRoutes);
 app.use('/api/login', loginRoutes);
 app.use('/api/signup', signupRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/settings', settingsRoutes);
 
 // Première page
-
 app.get('/', function(req, res) {
 	res.send('Welcome to Human Challenge API.');
 	console.log('hello');
