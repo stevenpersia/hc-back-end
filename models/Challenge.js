@@ -32,7 +32,7 @@ const ChallengeSchema = new mongoose.Schema({
         /* if contact !== owner */
         contactName: String,
         contactEmail: String,
-        contactPhone: Number,
+        contactPhone: String,
     },
     location: {
         adressLine1: String,

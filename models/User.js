@@ -8,7 +8,10 @@ const UserSchema = new mongoose.Schema({
 		username: String,
 		email: String,
 		biography: String,
-		phoneNumber: { type: String, unique: true },
+		phoneNumber: {
+			type: String,
+			unique: true
+		},
 		avatar: String,
 		interests: Array
 	},
@@ -22,15 +25,22 @@ const UserSchema = new mongoose.Schema({
 		pepper: String,
 		smsCode: String
 	},
-	challenges: [
-		{
+	challenges: {
+		player: [{
 			id: {
 				type: mongoose.Schema.Types.ObjectId,
 				ref: 'Challenge'
 			},
 			status: String
-		}
-	],
+		}],
+		manager: [{
+			id: {
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'Challenge'
+			},
+			status: String
+		}]
+	},
 	location: {
 		adressLine1: String,
 		adressLine2: String,
