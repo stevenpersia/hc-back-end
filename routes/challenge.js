@@ -9,7 +9,7 @@ var ObjectId = require("mongoose").Types.ObjectId;
 // !!!! rajouter filtres pour la recherche
 
 router.get('/', function (req, res) {
-    Challenge.find().exec(function (err, Challenges) {
+    Challenge.find(filter).exec(function (err, Challenges) {
         if (!err) {
             res.json(Challenges);
         } else {
@@ -91,14 +91,9 @@ router.delete('/remove/:id', isAuthenticated, function (req, res, next) {
                 return next('Nothing to delete');
             } else {
                 for (let i = 0; i < req.user.challenges.manager.length; i++) {
-                    console.log(req.params.id, JSON.stringify(req.user.challenges.manager[i]._id));
-
                     if (JSON.stringify(req.params.id) === JSON.stringify(req.user.challenges.manager[i]._id)) {
-                        console.log("yoyoyoy");
-
                         req.user.challenges.manager.splice(i, 1);
                     }
-
                 }
                 req.user.save();
                 return res.json({
@@ -107,6 +102,28 @@ router.delete('/remove/:id', isAuthenticated, function (req, res, next) {
             }
         }
     );
+});
+
+router.put('/update/:id', isAuthenticated, function (req, res) {
+    Challenge.findOne({
+        _id: ObjectId(req.params.id),
+        owner: req.user
+    }, function (err, challenge) {
+        if (err) {
+            res.status(400);
+            return next('An error occured');
+        } else {
+            const keys = ["ref", "location", "date", "media", "challengers", "badges", "canceled"];
+            for (let i = 0; i < keys.length; i++) {
+                req.body[keys[i]] && Object.assign(challenge[keys[i]], req.body[keys[i]]);
+            }
+            challenge.save();
+            return res.json(challenge);
+        }
+    });
+
+
+
 });
 
 
