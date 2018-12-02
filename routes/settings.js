@@ -5,6 +5,10 @@ var Challenge = require('../models/Challenge.js');
 var isAuthenticated = require('../middlewares/isAuthenticated');
 var ObjectId = require('mongoose').Types.ObjectId;
 
+// Password
+const SHA256 = require('crypto-js/sha256');
+const encBase64 = require('crypto-js/enc-base64');
+
 // Show account details
 router.get('/:id', isAuthenticated, function(req, res, next) {
 	User.findById(req.params.id)
@@ -24,7 +28,26 @@ router.get('/:id', isAuthenticated, function(req, res, next) {
 });
 
 // Update account
-router.put('/update', isAuthenticated, function(req, res, next) {});
+router.put('/update/:id', isAuthenticated, function(req, res, next) {
+	User.findById(req.params.id, function(err, user) {
+		const hash = SHA256(
+			req.body.account.password + user.security.salt
+		).toString(encBase64);
+
+		if (err) {
+			res.status(400);
+			return next('An error occured');
+		} else {
+			if (req.body.account.password) {
+				user.security.hash = hash;
+			}
+			req.body.account && Object.assign(user.account, req.body.account);
+			req.body.security && Object.assign(user.security, req.body.security);
+			user.save();
+			return res.json(user);
+		}
+	});
+});
 
 // Delete account
 router.delete('/remove/:id', isAuthenticated, function(req, res, next) {
