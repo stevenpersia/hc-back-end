@@ -40,7 +40,6 @@ const ChallengeSchema = new mongoose.Schema({
         city: String,
         zipCode: Number,
         geolocalisation: {
-            timestamp: Number,
             coords: {
                 accuracy: Number,
                 altitude: Number,

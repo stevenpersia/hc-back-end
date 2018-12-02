@@ -1,8 +1,8 @@
 var express = require("express");
 var router = express.Router();
 var Challenge = require("../models/Challenge.js");
-// var isAuthenticated = require("../middlewares/isAuthenticated");
-// var uploadPictures = require("../middlewares/uploadPictures");
+var isAuthenticated = require("../middlewares/isAuthenticated");
+var uploadPictures = require("../middlewares/uploadPictures");
 // var ObjectId = require("mongoose").Types.ObjectId;
 
 
@@ -21,35 +21,33 @@ router.get("/", function (req, res) {
 
 // Création d'un nouveau défi
 
-router.post("/create/", function (req, res) {
+router.post("/create/", isAuthenticated, uploadPictures, function (req, res) {
     const challenge = new Challenge({
-        owner: req.body.ownerId,
+        owner: req.user,
         // badges: [{
         //     type: mongoose.Schema.Types.ObjectId,
         //     ref: "Badge"
         // }],
         ref: {
-            name: req.body.name,
-            category: req.body.categoryId,
-            descrition: req.body.descrition,
-            // prerequisites: [{
-            //     type: mongoose.Schema.Types.ObjectId,
-            //     ref: "Prerequisite"
-            // }],
-            moreInfo: req.body.moreInfo,
-            contactName: req.body.contactName,
-            contactEmail: req.body.contactEmail,
-            contactPhone: req.body.contactPhone,
+            name: req.body.ref.name,
+            category: req.body.ref.categoryId,
+            descrition: req.body.ref.descrition,
+            // prerequisites doit être un tableau avec les _id des prérequisites
+            prerequisites: req.body.ref.prerequisites,
+            moreInfo: req.body.ref.moreInfo,
+            contactName: req.body.ref.contactName,
+            contactEmail: req.body.ref.contactEmail,
+            contactPhone: req.body.ref.contactPhone,
         },
         location: {
-            adressLine1: req.body.adressLine1,
-            adressLine2: req.body.adressLine2,
-            city: req.body.city,
-            zipCode: req.body.zipCode,
+            adressLine1: req.body.location.adressLine1,
+            adressLine2: req.body.location.adressLine2,
+            city: req.body.location.city,
+            zipCode: req.body.location.zipCode,
             geolocalisation: {
                 coords: {
-                    latitude: req.body.latitude,
-                    longitude: req.body.longitude,
+                    latitude: req.body.location.coords.latitude,
+                    longitude: req.body.location.coords.longitude,
 
                 }
             }
@@ -58,29 +56,36 @@ router.post("/create/", function (req, res) {
             beginDate: req.body.date.beginDate,
             endDate: req.body.date.endDate,
         },
-        media: {
-            images: Array,
-            videos: Array
-        },
+        // media: {
+        //     images: Array,
+        //     videos: Array
+        // },
         canceled: false
     });
 
-    cloudinary.uploader.upload("sample.jpg", {
-        "crop": "limit",
-        "tags": "samples",
-        "width": 3000,
-        "height": 2000
-    }, function (result) {
-        console.log(result)
+
+    router.delete("/remove/:id", isAuthenticated, function (req, res, next) {
+        Challenge.findOneAndRemove({
+                _id: ObjectId(req.params.id),
+                owner: req.user
+            },
+            function (err, obj) {
+                if (err) {
+                    return next(err.message);
+                }
+                if (!obj) {
+                    res.status(404);
+                    return next("Nothing to delete");
+                } else {
+                    return res.json({
+                        message: "Deleted"
+                    });
+                }
+            }
+        );
     });
 
-    cloudinary.image("sample", {
-        "crop": "fill",
-        "gravity": "faces",
-        "width": 300,
-        "height": 200,
-        "format": "jpg"
-    });
+
 
 
 
