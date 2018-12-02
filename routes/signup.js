@@ -12,7 +12,6 @@ router.post('/', function(req, res, next) {
 	const salt = uid2(64);
 	const hash = SHA256(req.body.account.password + salt).toString(encBase64);
 
-	// Rendre username, password, phone obligatoire
 	const user = new User({
 		account: {
 			username: req.body.account.username,

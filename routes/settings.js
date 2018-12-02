@@ -27,7 +27,7 @@ router.get('/:id', isAuthenticated, function(req, res, next) {
 router.put('/update', isAuthenticated, function(req, res, next) {});
 
 // Delete account
-router.delete('/delete/:id', isAuthenticated, function(req, res, next) {
+router.delete('/remove/:id', isAuthenticated, function(req, res, next) {
 	User.remove({ _id: ObjectId(req.params.id) }, function(err, user) {
 		if (err) {
 			return next(err.message);
