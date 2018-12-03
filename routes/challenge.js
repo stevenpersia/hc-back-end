@@ -9,7 +9,9 @@ var ObjectId = require("mongoose").Types.ObjectId;
 // !!!! rajouter filtres pour la recherche
 
 router.get('/', function (req, res) {
-    Challenge.find(filter).exec(function (err, Challenges) {
+
+
+    Challenge.find().exec(function (err, Challenges) {
         if (!err) {
             res.json(Challenges);
         } else {
@@ -17,6 +19,18 @@ router.get('/', function (req, res) {
         }
     });
 });
+
+// Afficher un défi
+router.get('/:id', function (req, res) {
+    Challenge.findById(req.params.id).exec(function (err, challenge) {
+        if (!err) {
+            res.json(challenge);
+        } else {
+            res.send('something is wrong');
+        }
+    });
+});
+
 
 // Création d'un nouveau défi
 
