@@ -9,9 +9,13 @@ var ObjectId = require("mongoose").Types.ObjectId;
 // !!!! rajouter filtres pour la recherche
 
 router.get('/', function (req, res) {
+    const filter = {};
 
 
-    Challenge.find().exec(function (err, Challenges) {
+
+
+
+    Challenge.find(filter).exec(function (err, Challenges) {
         if (!err) {
             res.json(Challenges);
         } else {
@@ -35,6 +39,10 @@ router.get('/:id', function (req, res) {
 // Création d'un nouveau défi
 
 router.post('/create', isAuthenticated, function (req, res) {
+    defiDuration = (new Date(req.body.date.endDate) - new Date(req.body.date.beginDate));
+
+
+
     const challenge = new Challenge({
         owner: req.user,
         // badges: [{
@@ -66,7 +74,8 @@ router.post('/create', isAuthenticated, function (req, res) {
         },
         date: {
             beginDate: req.body.date.beginDate,
-            endDate: req.body.date.endDate
+            endDate: req.body.date.endDate,
+            duration: defiDuration
         },
         // media: {
         //     images: Array,

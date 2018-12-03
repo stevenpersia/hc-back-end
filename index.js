@@ -23,11 +23,10 @@ app.use('/api', cors());
 
 // CONNEXION AU SERVEUR
 mongoose.connect(
-	process.env.MONGODB_URI,
-	{
+	process.env.MONGODB_URI, {
 		useNewUrlParser: true
 	},
-	function(err) {
+	function (err) {
 		if (err) console.error('Could not connect to mongodb.');
 	}
 );
@@ -59,14 +58,14 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/settings', settingsRoutes);
 
 // Première page
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
 	res.send('Welcome to Human Challenge API.');
 	console.log('hello');
 });
 
 // Toutes les méthodes HTTP (GET, POST, etc.) des pages non trouvées afficheront
 // une erreur 404
-app.all('*', function(req, res) {
+app.all('*', function (req, res) {
 	res.status(404).json({
 		error: 'Not Found'
 	});
@@ -74,6 +73,6 @@ app.all('*', function(req, res) {
 
 // Initialisation du serveur
 
-app.listen(process.env.PORT || 3000, function() {
+app.listen(process.env.PORT || 3000, function () {
 	console.log('Serveur initialisé');
 });

@@ -54,6 +54,7 @@ const ChallengeSchema = new mongoose.Schema({
     date: {
         beginDate: Date,
         endDate: Date,
+        duration: Number
     },
     media: {
         images: Array,
