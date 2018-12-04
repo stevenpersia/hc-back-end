@@ -24,6 +24,13 @@ router.get('/', function (req, res) {
                 $options: "i"
             };
     }
+    if (req.query.city) {
+        filter
+            ["location.city"] = {
+                $regex: req.query.city,
+                $options: "i"
+            };
+    }
 
 
 
