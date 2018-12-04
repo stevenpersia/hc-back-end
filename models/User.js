@@ -41,13 +41,15 @@ const UserSchema = new mongoose.Schema({
 			status: String
 		}]
 	},
-	location: {
+	adress: {
 		adressLine1: String,
 		adressLine2: String,
 		city: String,
-		zipCode: Number,
-		latitude: Number,
-		longitude: Number
+		zipCode: Number
+	},
+	loc: {
+		type: [Number], // Longitude et latitude
+		index: "2d" // Créer un index geospatial https://docs.mongodb.com/manual/core/2d/
 	},
 	badges: Array,
 

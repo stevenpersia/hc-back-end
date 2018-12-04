@@ -34,22 +34,15 @@ const ChallengeSchema = new mongoose.Schema({
         contactEmail: String,
         contactPhone: String,
     },
-    location: {
+    adress: {
         adressLine1: String,
         adressLine2: String,
         city: String,
-        zipCode: Number,
-        geolocalisation: {
-            coords: {
-                accuracy: Number,
-                altitude: Number,
-                altitudeAccuracy: Number,
-                heading: Number,
-                latitude: Number,
-                longitude: Number,
-                speed: Number
-            }
-        }
+        zipCode: Number
+    },
+    loc: {
+        type: [Number], // Longitude et latitude
+        index: "2d" // Créer un index geospatial https://docs.mongodb.com/manual/core/2d/
     },
     date: {
         beginDate: Date,
