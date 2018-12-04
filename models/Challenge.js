@@ -23,7 +23,7 @@ const ChallengeSchema = new mongoose.Schema({
             ref: "Category"
         },
         /* Animaux, Environnement, Social, Culture  */
-        descrition: String,
+        description: String,
         prerequisites: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: "Prerequisite"

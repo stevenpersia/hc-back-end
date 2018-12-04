@@ -10,7 +10,20 @@ var ObjectId = require("mongoose").Types.ObjectId;
 
 router.get('/', function (req, res) {
     const filter = {};
-
+    if (req.query.name) {
+        filter
+            ["ref.name"] = {
+                $regex: req.query.name,
+                $options: "i"
+            };
+    }
+    if (req.query.description) {
+        filter
+            ["ref.description"] = {
+                $regex: req.query.description,
+                $options: "i"
+            };
+    }
 
 
 
@@ -52,7 +65,7 @@ router.post('/create', isAuthenticated, function (req, res) {
         ref: {
             name: req.body.ref.name,
             category: req.body.ref.categoryId,
-            descrition: req.body.ref.descrition,
+            description: req.body.ref.description,
             // prerequisites doit être un tableau avec les _id des prérequisites
             prerequisites: req.body.ref.prerequisites,
             moreInfo: req.body.ref.moreInfo,
