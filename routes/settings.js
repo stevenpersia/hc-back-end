@@ -10,39 +10,41 @@ const SHA256 = require('crypto-js/sha256');
 const encBase64 = require('crypto-js/enc-base64');
 
 // Show account details
-router.get('/:id', isAuthenticated, function(req, res, next) {
+router.get('/:id', isAuthenticated, function (req, res, next) {
 	User.findById(req.params.id)
 		.exec()
-		.then(function(user) {
+		.then(function (user) {
 			if (!user) {
 				res.status(404);
 				return next('User not found');
 			}
 
-			return res.json({ user });
+			return res.json({
+				user
+			});
 		})
-		.catch(function(err) {
+		.catch(function (err) {
 			res.status(400);
 			return next(err.message);
 		});
 });
 
 // Update account
-router.put('/update/:id', isAuthenticated, function(req, res, next) {
-	User.findById(req.params.id, function(err, user) {
-		const hash = SHA256(
-			req.body.account.password + user.security.salt
-		).toString(encBase64);
-
+router.put('/update/:id', isAuthenticated, function (req, res, next) {
+	User.findById(req.params.id, function (err, user) {
 		if (err) {
 			res.status(400);
 			return next('An error occured');
 		} else {
 			if (req.body.account.password) {
+				const hash = SHA256(
+					req.body.account.password + user.security.salt
+				).toString(encBase64);
 				user.security.hash = hash;
+				req.body.security && Object.assign(user.security, req.body.security);
 			}
 			req.body.account && Object.assign(user.account, req.body.account);
-			req.body.security && Object.assign(user.security, req.body.security);
+
 			user.save();
 			return res.json(user);
 		}
@@ -50,8 +52,10 @@ router.put('/update/:id', isAuthenticated, function(req, res, next) {
 });
 
 // Delete account
-router.delete('/remove/:id', isAuthenticated, function(req, res, next) {
-	User.remove({ _id: ObjectId(req.params.id) }, function(err, user) {
+router.delete('/remove/:id', isAuthenticated, function (req, res, next) {
+	User.remove({
+		_id: ObjectId(req.params.id)
+	}, function (err, user) {
 		if (err) {
 			return next(err.message);
 		}
@@ -59,14 +63,18 @@ router.delete('/remove/:id', isAuthenticated, function(req, res, next) {
 			res.status(404);
 			return next('Nothing to delete');
 		}
-		Challenge.remove(
-			{
-				$and: [
-					{ owner: ObjectId(req.params.id) },
-					{ 'date.endDate': { $gte: new Date() } }
+		Challenge.remove({
+				$and: [{
+						owner: ObjectId(req.params.id)
+					},
+					{
+						'date.endDate': {
+							$gte: new Date()
+						}
+					}
 				]
 			},
-			function(err, challengeFound) {
+			function (err, challengeFound) {
 				if (err) {
 					return next(err.message);
 				}
