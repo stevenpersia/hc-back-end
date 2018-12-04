@@ -8,8 +8,26 @@ var ObjectId = require("mongoose").Types.ObjectId;
 // Récuperer la liste des défis
 // !!!! rajouter filtres pour la recherche
 
+function getRadians(meters) {
+    var km = meters / 1000;
+    return km / 111.2;
+}
+
 router.get('/', function (req, res) {
     const filter = {};
+    // distance de recherche par default égale à 50 km
+    let distance = 50000;
+    let lat = 48.8708208;
+    let long = 2.3715514;
+
+    if (req.query.longitude && req.query.latitude) {
+        lat = req.query.latitude;
+        long = req.query.longitude
+    }
+
+    if (req.query.distance) {
+        distance = Number(req.query.distance);
+    }
     if (req.query.name) {
         filter
             ["ref.name"] = {
@@ -26,22 +44,25 @@ router.get('/', function (req, res) {
     }
     if (req.query.city) {
         filter
-            ["location.city"] = {
+            ["adress.city"] = {
                 $regex: req.query.city,
                 $options: "i"
             };
     }
 
-
-
-
-    Challenge.find(filter).exec(function (err, Challenges) {
-        if (!err) {
-            res.json(Challenges);
-        } else {
-            res.send('something is wrong');
-        }
-    });
+    Challenge.find(filter).where("loc")
+        .near({
+            center: [long,
+                lat
+            ],
+            maxDistance: getRadians(distance)
+        }).exec(function (err, Challenges) {
+            if (!err) {
+                res.json(Challenges);
+            } else {
+                res.send('something is wrong');
+            }
+        });
 });
 
 // Afficher un défi
@@ -61,6 +82,9 @@ router.get('/:id', function (req, res) {
 router.post('/create', isAuthenticated, function (req, res) {
     defiDuration = (new Date(req.body.date.endDate) - new Date(req.body.date.beginDate));
 
+    localisation = [];
+    localisation.push(req.body.loc.longitude);
+    localisation.push(req.body.loc.latitude);
 
 
     const challenge = new Challenge({
@@ -80,18 +104,17 @@ router.post('/create', isAuthenticated, function (req, res) {
             contactEmail: req.body.ref.contactEmail,
             contactPhone: req.body.ref.contactPhone
         },
-        location: {
-            adressLine1: req.body.location.adressLine1,
-            adressLine2: req.body.location.adressLine2,
-            city: req.body.location.city,
-            zipCode: req.body.location.zipCode,
-            geolocalisation: {
-                coords: {
-                    latitude: req.body.location.geolocalisation.coords.latitude,
-                    longitude: req.body.location.geolocalisation.coords.longitude
-                }
-            }
+        adress: {
+            adressLine1: req.body.adress.adressLine1,
+            adressLine2: req.body.adress.adressLine2,
+            city: req.body.adress.city,
+            zipCode: req.body.adress.zipCode
         },
+        loc:
+
+            localisation
+
+            ,
         date: {
             beginDate: req.body.date.beginDate,
             endDate: req.body.date.endDate,
@@ -106,7 +129,9 @@ router.post('/create', isAuthenticated, function (req, res) {
     challenge.save(function (err) {
 
         if (err) {
-            return next(err.message);
+            return res.json(
+                err
+            );
         } else {
             req.user.challenges.manager.push(challenge._id)
             req.user.save();

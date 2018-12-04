@@ -23,7 +23,8 @@ app.use('/api', cors());
 
 // CONNEXION AU SERVEUR
 mongoose.connect(
-	process.env.MONGODB_URI, {
+	// process.env.MONGODB_URI
+	"mongodb://localhost:27017/human_challengeTest", {
 		useNewUrlParser: true,
 		useCreateIndex: true
 	},
