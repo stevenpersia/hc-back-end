@@ -3,6 +3,7 @@ var router = express.Router();
 var User = require("../models/User.js");
 var Challenge = require("../models/Challenge.js");
 var isAuthenticated = require("../middlewares/isAuthenticated");
+var uploadPictures = require("../middlewares/uploadPictures");
 var ObjectId = require("mongoose").Types.ObjectId;
 
 // Password
@@ -10,10 +11,10 @@ const SHA256 = require("crypto-js/sha256");
 const encBase64 = require("crypto-js/enc-base64");
 
 // Show account details
-router.get("/:id", isAuthenticated, function(req, res, next) {
+router.get("/:id", isAuthenticated, function (req, res, next) {
   User.findById(req.params.id)
     .exec()
-    .then(function(user) {
+    .then(function (user) {
       if (!user) {
         res.status(404);
         return next("User not found");
@@ -23,19 +24,19 @@ router.get("/:id", isAuthenticated, function(req, res, next) {
         user
       });
     })
-    .catch(function(err) {
+    .catch(function (err) {
       res.status(400);
       return next(err.message);
     });
 });
 
 // Update account
-router.put("/update/:id", isAuthenticated, uploadPictures, function(
+router.put("/update/:id", isAuthenticated, uploadPictures, function (
   req,
   res,
   next
 ) {
-  User.findById(req.params.id, function(err, user) {
+  User.findById(req.params.id, function (err, user) {
     if (err) {
       res.status(400);
       return next("An error occured");
@@ -60,12 +61,11 @@ router.put("/update/:id", isAuthenticated, uploadPictures, function(
 });
 
 // Delete account
-router.delete("/remove/:id", isAuthenticated, function(req, res, next) {
-  User.remove(
-    {
+router.delete("/remove/:id", isAuthenticated, function (req, res, next) {
+  User.remove({
       _id: ObjectId(req.params.id)
     },
-    function(err, user) {
+    function (err, user) {
       if (err) {
         return next(err.message);
       }
@@ -73,10 +73,8 @@ router.delete("/remove/:id", isAuthenticated, function(req, res, next) {
         res.status(404);
         return next("Nothing to delete");
       }
-      Challenge.remove(
-        {
-          $and: [
-            {
+      Challenge.remove({
+          $and: [{
               owner: ObjectId(req.params.id)
             },
             {
@@ -86,7 +84,7 @@ router.delete("/remove/:id", isAuthenticated, function(req, res, next) {
             }
           ]
         },
-        function(err, challengeFound) {
+        function (err, challengeFound) {
           if (err) {
             return next(err.message);
           }
