@@ -24,7 +24,8 @@ app.use('/api', cors());
 // CONNEXION AU SERVEUR
 mongoose.connect(
 	process.env.MONGODB_URI, {
-		useNewUrlParser: true
+		useNewUrlParser: true,
+		useCreateIndex: true
 	},
 	function (err) {
 		if (err) console.error('Could not connect to mongodb.');
