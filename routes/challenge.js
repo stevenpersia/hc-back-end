@@ -1,3 +1,4 @@
+// IMPORTS
 var express = require("express");
 var router = express.Router();
 var Challenge = require("../models/Challenge.js");
@@ -5,55 +6,116 @@ var isAuthenticated = require("../middlewares/isAuthenticated");
 var uploadPictures = require("../middlewares/uploadPictures");
 var ObjectId = require("mongoose").Types.ObjectId;
 
-// Récuperer la liste des défis
-// !!!! rajouter filtres pour la recherche
-
+// FONCTIONS
+// fonction pour calculer la distance par rapport à un point en mètres
 function getRadians(meters) {
   var km = meters / 1000;
   return km / 111.2;
 }
-
-router.get("/", function(req, res) {
+// fonction pour mettre en place les paramètres des filtres
+function setFilters(req) {
   const filter = {};
-  // distance de recherche par default égale à 50 km
-  let distance = 50000;
-  let lat = 48.8708208;
-  let long = 2.3715514;
+  // filtre par rapport à la durée du défi
+  if (req.query.duration) {
+    const halfADay = 14400000;
+    const OneDay = 86400000;
 
-  if (req.query.longitude && req.query.latitude) {
-    lat = req.query.latitude;
-    long = req.query.longitude;
+    // si query 0 on à les défis de moins de 4h
+    if (Number(req.query.duration) === 0) {
+      filter["date.duration"] = {
+        $lte: halfADay
+      };
+    }
+    // si query 1 on à les défis de moins de 24h et plus de 4h
+    if (Number(req.query.duration) === 1) {
+      filter["date.duration"] = {
+        $gte: halfADay,
+        $lte: OneDay
+      };
+    }
+    // si query 2 on à les défis de plus de 24h
+    if (Number(req.query.duration) === 2) {
+      filter["date.duration"] = {
+        $gte: OneDay
+      };
+    }
   }
 
-  if (req.query.distance) {
-    distance = Number(req.query.distance);
+  // filtre sur les categories
+  if (req.query.category) {
+    // on initialise la catégorie à environnement
+    let cat = "5c0560a6c1215431d47a98e5";
+    if (req.query.category === "animaux") {
+      cat = "5c0560f1c1215431d47a98e7"
+    }
+    if (req.query.category === "social") {
+      cat = "5c0560230cb7ba31d4f7e63c"
+    }
+    if (req.query.category === "culture") {
+      cat = "5c0560c3c1215431d47a98e6"
+    }
+    filter["ref.category"] = cat;
   }
+
+  // si on a un nom dans la query on fait une recherche dessus
   if (req.query.name) {
     filter["ref.name"] = {
       $regex: req.query.name,
       $options: "i"
     };
   }
+
+  // si on a une description dans la query on fait une recherche dessus
   if (req.query.description) {
     filter["ref.description"] = {
       $regex: req.query.description,
       $options: "i"
     };
   }
+
+  // si on a une ville dans la query on fait une recherche dessus
   if (req.query.city) {
     filter["adress.city"] = {
       $regex: req.query.city,
       $options: "i"
     };
   }
+  return filter;
+}
 
-  Challenge.find(filter)
+// ROUTES
+// Récuperer la liste des défis
+router.get("/", function (req, res) {
+  // on met les filtres en place
+  const filters = setFilters(req);
+
+  // distance de recherche par default égale à 50 km
+  let distance = 50000;
+  // centre de la recherche par défault LE REACTEUR
+  let lat = 48.8708208;
+  let long = 2.3715514;
+
+  // si on a une longitude et latitude dans la query on remplace le centre
+  if (req.query.longitude && req.query.latitude) {
+    lat = req.query.latitude;
+    long = req.query.longitude;
+  }
+
+  // si on a une distance dans la query on la remplace
+  if (req.query.distance) {
+    distance = Number(req.query.distance);
+  }
+
+  // console.log(filters);
+
+  // on fait une recherche sur par rapport aux filtres et ensuite la distance
+  Challenge.find(filters)
     .where("loc")
     .near({
       center: [long, lat],
       maxDistance: getRadians(distance)
     })
-    .exec(function(err, Challenges) {
+    .populate("ref.category").exec(function (err, Challenges) {
       if (!err) {
         res.json(Challenges);
       } else {
@@ -63,8 +125,8 @@ router.get("/", function(req, res) {
 });
 
 // Afficher un défi
-router.get("/:id", function(req, res) {
-  Challenge.findById(req.params.id).exec(function(err, challenge) {
+router.get("/:id", function (req, res) {
+  Challenge.findById(req.params.id).exec(function (err, challenge) {
     if (!err) {
       res.json(challenge);
     } else {
@@ -75,7 +137,7 @@ router.get("/:id", function(req, res) {
 
 // Création d'un nouveau défi
 
-router.post("/create", isAuthenticated, uploadPictures, function(req, res) {
+router.post("/create", isAuthenticated, uploadPictures, function (req, res) {
   defiDuration =
     new Date(req.body.date.endDate) - new Date(req.body.date.beginDate);
 
@@ -118,7 +180,7 @@ router.post("/create", isAuthenticated, uploadPictures, function(req, res) {
     },
     canceled: false
   });
-  challenge.save(function(err) {
+  challenge.save(function (err) {
     if (err) {
       return res.json(err);
     } else {
@@ -130,13 +192,12 @@ router.post("/create", isAuthenticated, uploadPictures, function(req, res) {
   });
 });
 
-router.delete("/remove/:id", isAuthenticated, function(req, res, next) {
-  Challenge.findOneAndRemove(
-    {
+router.delete("/remove/:id", isAuthenticated, function (req, res, next) {
+  Challenge.findOneAndRemove({
       _id: ObjectId(req.params.id),
       owner: req.user
     },
-    function(err, obj) {
+    function (err, obj) {
       if (err) {
         return next(err.message);
       }
@@ -161,13 +222,12 @@ router.delete("/remove/:id", isAuthenticated, function(req, res, next) {
   );
 });
 
-router.put("/update/:id", isAuthenticated, function(req, res) {
-  Challenge.findOne(
-    {
+router.put("/update/:id", isAuthenticated, function (req, res) {
+  Challenge.findOne({
       _id: ObjectId(req.params.id),
       owner: req.user
     },
-    function(err, challenge) {
+    function (err, challenge) {
       if (err) {
         res.status(400);
         return next("An error occured");
