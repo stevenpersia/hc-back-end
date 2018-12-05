@@ -44,17 +44,31 @@ function setFilters(req) {
   // filtre sur les categories
   if (req.query.category) {
     // on initialise la catégorie à environnement
-    let cat = "5c0560a6c1215431d47a98e5";
-    if (req.query.category === "animaux") {
-      cat = "5c0560f1c1215431d47a98e7"
+    let result = []
+    let cat = ""
+    let tab = req.query.category.split(" ");
+    for (let i = 0; i < tab.length; i++) {
+      if (tab[i] === "environnement")
+        cat = "5c0560a6c1215431d47a98e5";
+      if (tab[i] === "animaux") {
+        cat = "5c0560f1c1215431d47a98e7"
+      }
+      if (tab[i] === "social") {
+        cat = "5c0560230cb7ba31d4f7e63c"
+      }
+      if (tab[i] === "culture") {
+        cat = "5c0560c3c1215431d47a98e6"
+      }
+      if (i === 0) {
+        result.push(cat)
+      } else {
+        result.push(cat)
+      }
     }
-    if (req.query.category === "social") {
-      cat = "5c0560230cb7ba31d4f7e63c"
-    }
-    if (req.query.category === "culture") {
-      cat = "5c0560c3c1215431d47a98e6"
-    }
-    filter["ref.category"] = cat;
+
+    filter["ref.category"] = {
+      $in: result
+    };
   }
 
   // si on a un nom dans la query on fait une recherche dessus
@@ -106,7 +120,7 @@ router.get("/", function (req, res) {
     distance = Number(req.query.distance);
   }
 
-  // console.log(filters);
+  console.log(filters);
 
   // on fait une recherche sur par rapport aux filtres et ensuite la distance
   Challenge.find(filters)
