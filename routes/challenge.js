@@ -127,7 +127,7 @@ router.get("/", function (req, res) {
       center: [long, lat],
       maxDistance: getRadians(distance)
     })
-    .populate("ref.category").exec(function (err, Challenges) {
+    .populate("ref.category owner challengers").exec(function (err, Challenges) {
       if (!err) {
         console.log(Challenges.length);
 
