@@ -143,7 +143,7 @@ router.get("/", function (req, res) {
 
 // Afficher un défi
 router.get("/:id", function (req, res) {
-  Challenge.findById(req.params.id).exec(function (err, challenge) {
+  Challenge.findById(req.params.id).populate("ref.category owner challengers badge ref.prerequisites").exec(function (err, challenge) {
     if (!err) {
       res.json(challenge);
     } else {
