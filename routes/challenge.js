@@ -43,7 +43,6 @@ function setFilters(req) {
 
   // filtre sur les categories
   if (req.query.category) {
-    // on initialise la catégorie à environnement
     let result = []
     let cat = ""
     let tab = req.query.category.split(" ");
@@ -65,7 +64,6 @@ function setFilters(req) {
         result.push(cat)
       }
     }
-
     filter["ref.category"] = {
       $in: result
     };
@@ -131,7 +129,12 @@ router.get("/", function (req, res) {
     })
     .populate("ref.category").exec(function (err, Challenges) {
       if (!err) {
-        res.json(Challenges);
+        console.log(Challenges.length);
+
+        res.json({
+          Challenges,
+          counter: Challenges.length
+        });
       } else {
         res.send("something is wrong");
       }
