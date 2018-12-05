@@ -1,5 +1,7 @@
 // Importation de CLoudinary : stocker les images
 const cloudinary = require("cloudinary");
+require('dotenv').config();
+
 // Configuration de Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -21,9 +23,8 @@ const uploadPictures = (req, res, next) => {
     files.forEach(file => {
       // Je crée un nom spécifique pour la photo
       const name = uid2(16);
-      cloudinary.v2.uploader.upload(
-        file,
-        {
+      cloudinary.v2.uploader.unsigned_upload(
+        file, "xggnoldd", {
           // J'assigne un dossier spécifique dans Cloudinary pour chaque utilisateur
           public_id: `humanChallenge/${req.user._id}/${name}`
         },
