@@ -97,7 +97,7 @@ router.delete("/remove/:id", isAuthenticated, function (req, res, next) {
         if (err) {
           return next(err.message);
         } else {
-          // associé au modele user (clé manager)
+          // associé au model user (clé manager)
 
           req.user.save();
 
