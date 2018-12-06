@@ -9,9 +9,9 @@ const app = express();
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 app.use(
-  bodyParser.json({
-    limit: "10mb"
-  })
+	bodyParser.json({
+		limit: "10mb"
+	})
 );
 const cors = require("cors");
 
@@ -23,15 +23,14 @@ app.use("/api", cors());
 
 // CONNEXION AU SERVEUR
 mongoose.connect(
-  // process.env.MONGODB_URI
-  process.env.MONGODB_URI,
-  {
-    useNewUrlParser: true,
-    useCreateIndex: true
-  },
-  function(err) {
-    if (err) console.error("Could not connect to mongodb.");
-  }
+	// process.env.MONGODB_URI
+	process.env.MONGODB_URI, {
+		useNewUrlParser: true,
+		useCreateIndex: true
+	},
+	function (err) {
+		if (err) console.error("Could not connect to mongodb.");
+	}
 );
 
 // Import des Models
@@ -63,21 +62,21 @@ app.use("/api/settings", settingsRoutes);
 app.use("/api/user", userRoutes);
 
 // Première page
-app.get("/", function(req, res) {
-  res.send("Welcome to Human Challenge API.");
-  console.log("hello");
+app.get("/", function (req, res) {
+	res.send("Welcome to Human Challenge API.");
+	console.log("hello");
 });
 
 // Toutes les méthodes HTTP (GET, POST, etc.) des pages non trouvées afficheront
 // une erreur 404
-app.all("*", function(req, res) {
-  res.status(404).json({
-    error: "Not Found"
-  });
+app.all("*", function (req, res) {
+	res.status(404).json({
+		error: "Not Found"
+	});
 });
 
 // Initialisation du serveur
 
-app.listen(process.env.PORT || 3000, function() {
-  console.log("Serveur initialisé");
+app.listen(process.env.PORT || 3000, function () {
+	console.log("Serveur initialisé");
 });

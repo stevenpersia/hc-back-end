@@ -9,12 +9,12 @@ var ObjectId = require("mongoose").Types.ObjectId;
 // L'authentification est obligatoire pour cette route
 
 // PARTICIPER AU CHALLENGE
-router.put("/participate/:id", isAuthenticated, function(req, res, next) {
+router.put("/participate/:id", isAuthenticated, function (req, res, next) {
   Challenge.findOne({
-    _id: ObjectId(req.params.id)
-  })
+      _id: ObjectId(req.params.id)
+    })
     .exec()
-    .then(function(challenge) {
+    .then(function (challenge) {
       if (!challenge) {
         res.status(404);
         return next("Challenge not found");
@@ -37,7 +37,7 @@ router.put("/participate/:id", isAuthenticated, function(req, res, next) {
       // si l'utilisateur n'est pas déjà inscrit au challenge, on l'inscrit
       if (challengerExists === false) {
         challenge.challengers.push(req.user._id);
-        challenge.save(function(err) {
+        challenge.save(function (err) {
           if (err) {
             return next(err.message);
           } else {
@@ -45,7 +45,10 @@ router.put("/participate/:id", isAuthenticated, function(req, res, next) {
             req.user.challenges.player.push(challenge._id); // ou challenge
             req.user.save();
 
-            return res.json({ user: req.user, challenge: challenge });
+            return res.json({
+              user: req.user,
+              challenge: challenge
+            });
           }
         });
       }
@@ -53,19 +56,19 @@ router.put("/participate/:id", isAuthenticated, function(req, res, next) {
         return res.send("déjà inscrit au challenge");
       }
     })
-    .catch(function(err) {
+    .catch(function (err) {
       res.status(400);
       return next(err.message);
     });
 });
 
 // SUPPRESSION DE SA PARTICIPATION AU CHALLENGE
-router.delete("/remove/:id", isAuthenticated, function(req, res, next) {
+router.delete("/remove/:id", isAuthenticated, function (req, res, next) {
   Challenge.findOne({
-    _id: ObjectId(req.params.id)
-  })
+      _id: ObjectId(req.params.id)
+    })
     .exec()
-    .then(function(challenge) {
+    .then(function (challenge) {
       if (!challenge) {
         res.status(404);
         return next("Challenge pas trouvé");
@@ -90,7 +93,7 @@ router.delete("/remove/:id", isAuthenticated, function(req, res, next) {
         }
       }
 
-      challenge.save(function(err) {
+      challenge.save(function (err) {
         if (err) {
           return next(err.message);
         } else {
@@ -98,11 +101,13 @@ router.delete("/remove/:id", isAuthenticated, function(req, res, next) {
 
           req.user.save();
 
-          return res.json({ message: "supprimé" });
+          return res.json({
+            message: "supprimé"
+          });
         }
       });
     })
-    .catch(function(err) {
+    .catch(function (err) {
       res.status(400);
       return next(err.message);
     });
