@@ -49,7 +49,7 @@ const loginRoutes = require("./routes/login.js");
 const signupRoutes = require("./routes/signup.js");
 const profileRoutes = require("./routes/profile.js");
 const settingsRoutes = require("./routes/settings.js");
-const userRoutes = require("./routes/user.js");
+const userRoutes = require("./routes/users.js");
 
 // Les routes relatives aux utilisateurs auront pour prefix d'URL `/user`
 // app.use("/api", coreRoutes);
