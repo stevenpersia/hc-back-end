@@ -7,7 +7,7 @@ var uid2 = require('uid2');
 const SHA256 = require('crypto-js/sha256');
 const encBase64 = require('crypto-js/enc-base64');
 
-router.post('/', function(req, res, next) {
+router.post('/', uploadPictures, function(req, res, next) {
 	const token = uid2(64);
 	const salt = uid2(64);
 	const hash = SHA256(req.body.account.password + salt).toString(encBase64);
