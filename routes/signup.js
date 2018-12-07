@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/User.js');
+var uploadPictures = require('../middlewares/uploadPictures');
 
 // Password
 var uid2 = require('uid2');
