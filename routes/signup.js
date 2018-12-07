@@ -17,7 +17,7 @@ router.post('/', function(req, res, next) {
 			username: req.body.account.username,
 			email: req.body.account.email,
 			phoneNumber: req.body.account.phoneNumber,
-			avatar: req.body.account.avatar,
+			avatar: req.pictures,
 			interests: req.body.account.interests
 		},
 		security: {
