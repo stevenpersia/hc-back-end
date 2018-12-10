@@ -39,7 +39,7 @@ function setFilters(req) {
         $gte: OneDay
       };
     }
-  }
+  
   
   // si query 4 on à les défis de moins de 12h
     if (Number(req.query.duration) === 4) {
