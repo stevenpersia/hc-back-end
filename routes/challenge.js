@@ -21,22 +21,44 @@ function setFilters(req) {
     const OneDay = 86400000;
 
     // si query 0 on à les défis de moins de 4h
-    if (Number(req.query.duration) === 0) {
+    if (Number(req.query.duration) === 1) {
       filter["date.duration"] = {
         $lte: halfADay
       };
     }
     // si query 1 on à les défis de moins de 24h et plus de 4h
-    if (Number(req.query.duration) === 1) {
+    if (Number(req.query.duration) === 3) {
       filter["date.duration"] = {
         $gte: halfADay,
         $lte: OneDay
       };
     }
     // si query 2 on à les défis de plus de 24h
-    if (Number(req.query.duration) === 2) {
+    if (Number(req.query.duration) === 5) {
       filter["date.duration"] = {
         $gte: OneDay
+      };
+    }
+  }
+  
+  // si query 4 on à les défis de moins de 12h
+    if (Number(req.query.duration) === 4) {
+      filter["date.duration"] = {
+        $lte: OneDay
+      };
+    }
+    // si query 1 on à les défis de moins de 24h et plus de 4h
+    if (Number(req.query.duration) === 6) {
+      filter["date.duration"] = { $or: [{
+        $lte: halfADay
+      },
+      { $gte:OneDay}
+      ]};
+    }
+    // si query 8 on à les défis de plus de 24h
+    if (Number(req.query.duration) === 8) {
+      filter["date.duration"] = {
+        $gte: halfADay
       };
     }
   }
