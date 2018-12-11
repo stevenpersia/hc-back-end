@@ -6,6 +6,7 @@ module.exports = (req, res, next) => {
 			{ 'security.token': req.headers.authorization.replace('Bearer ', '') },
 			function(err, user) {
 				if (err) {
+					console.log("err",err);
 					return res.status(400).json({ error: err.message });
 				}
 				if (!user) {
