@@ -49,12 +49,12 @@ function setFilters(req) {
     }
     // si query 1 on à les défis de moins de 24h et plus de 4h
     if (Number(req.query.duration) === 6) {
-      filter["date.duration"] = { $or: [{
-        $lte: halfADay
-      },
-      { $gte:OneDay}
-      ]};
-    }
+      filter["date.duration"] = { $not: {
+        $gte: halfADay
+      ,
+       $lte:OneDay
+      }
+    };}
     // si query 8 on à les défis de plus de 24h
     if (Number(req.query.duration) === 8) {
       filter["date.duration"] = {
