@@ -27,19 +27,14 @@ const UserSchema = new mongoose.Schema({
   },
   challenges: {
     player: [{
-      id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Challenge"
-      },
-      status: String
-    }],
+      }],
     manager: [{
-      id: {
+      
         type: mongoose.Schema.Types.ObjectId,
         ref: "Challenge"
-      },
-      status: String
-    }]
+      }]
   },
   adress: {
     adressLine1: String,
