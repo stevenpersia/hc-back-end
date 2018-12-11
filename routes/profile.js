@@ -7,7 +7,7 @@ var isAuthenticated = require("../middlewares/isAuthenticated");
 
 // L'authentification est obligatoire pour cette route
 router.get("/:id", isAuthenticated, function(req, res, next) {
-  User.findById(req.params.id).populate("challenges.player.challenge challenges.manager.challenge")
+  User.findById(req.params.id).populate("challenges.player challenges.manager")
     .exec()
     .then(function(user) {
       if (!user) {
