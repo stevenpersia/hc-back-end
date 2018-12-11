@@ -54,7 +54,7 @@ router.put("/update/:id", isAuthenticated, uploadPictures, function (
         user.account.avatar = req.pictures;
       }
 
-      user.save(e => {console.log(e, e.message});
+      user.save(e => {console.log(e, e.message)});
       return res.json(user);
     }
   });
