@@ -41,9 +41,9 @@ router.put("/update/:id", isAuthenticated, uploadPictures, function (
       res.status(400);
       return next("An error occured");
     } else {
-      if (req.body.account.password) {
+      if (req.body.security.password) {
         const hash = SHA256(
-          req.body.account.password + user.security.salt
+          req.body.security.password + user.security.salt
         ).toString(encBase64);
         user.security.hash = hash;
         req.body.security && Object.assign(user.security, req.body.security);
@@ -54,7 +54,7 @@ router.put("/update/:id", isAuthenticated, uploadPictures, function (
         user.account.avatar = req.pictures;
       }
 
-      user.save();
+      user.save(e => {console.log(e, e.message});
       return res.json(user);
     }
   });
