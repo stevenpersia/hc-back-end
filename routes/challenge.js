@@ -177,6 +177,7 @@ router.get("/:id", function (req, res) {
 // Création d'un nouveau défi
 
 router.post("/create", isAuthenticated, uploadPictures, function (req, res) {
+  console.log("req",req);
   defiDuration =
     new Date(req.body.date.endDate) - new Date(req.body.date.beginDate);
 
