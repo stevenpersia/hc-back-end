@@ -15,11 +15,7 @@ router.get("/:id", isAuthenticated, function(req, res, next) {
         return next("User not found");
       }
 
-      return res.json({
-        _id: user._id,
-        account: user.account,
-        challenges: user.challenges
-      });
+      return res.json(user);
     })
     .catch(function(err) {
       res.status(400);
