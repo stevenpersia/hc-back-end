@@ -18,6 +18,7 @@ module.exports = (req, res, next) => {
 			}
 		);
 	} else {
-		return res.status(401).json({ error: 'Unauthorized' });
+		
+		return res.status(401).json({ error: 'other' });
 	}
 };
