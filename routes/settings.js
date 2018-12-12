@@ -36,7 +36,7 @@ router.put('/update/:id', isAuthenticated, uploadPictures, function(
 	res,
 	next
 ) {
-	User.findByIdAndUpdate(req.params.id, function(err, user) {
+	User.findById(req.params.id, function(err, user) {
 		if (err) {
 			res.status(400);
 			return next('An error occured');
