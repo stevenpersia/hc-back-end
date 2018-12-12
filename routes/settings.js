@@ -55,9 +55,9 @@ router.put('/update/:id', isAuthenticated, uploadPictures, function(
 			}
 
 			user.save(e => {
-				console.log(e, e.message);
+				console.log(e);
+				return res.json(user);
 			});
-			return res.json(user);
 		}
 	});
 });
